@@ -1,0 +1,162 @@
+@import "./lib.scss";
+
+body {
+  text-align: center;
+  background: url('data:image/svg+xml,<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M8 16c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm0-2c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm33.414-6l5.95-5.95L45.95.636 40 6.586 34.05.636 32.636 2.05 38.586 8l-5.95 5.95 1.414 1.414L40 9.414l5.95 5.95 1.414-1.414L41.414 8zM40 48c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm0-2c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zM9.414 40l5.95-5.95-1.414-1.414L8 38.586l-5.95-5.95L.636 34.05 6.586 40l-5.95 5.95 1.414 1.414L8 41.414l5.95 5.95 1.414-1.414L9.414 40z" fill="%234dd0e1" fill-rule="evenodd"/></svg>')
+    center #26c6da;
+}
+
+//vars
+$fg: #ff4081;
+$bg: #3f51b5;
+$pi: 3.14;
+
+//config
+$menu-items: 5;
+$open-distance: 115px;
+$opening-angle: $pi - 0.2;
+
+html {
+  font-family: "Quicksand", sans-serif;
+}
+a {
+  color: inherit;
+}
+h1,
+h2,
+h3,
+h4 {
+  margin: 10px 0;
+  color: white;
+}
+h1 {
+  font-size: 3em;
+}
+
+%goo {
+  filter: url("#shadowed-goo");
+  // debug
+  // background:rgba(255,0,0,0.2);
+}
+%ball {
+  background: $fg;
+  border-radius: 100%;
+  width: 80px;
+  height: 80px;
+  margin-left: -40px;
+  position: absolute;
+  top: 20px;
+  color: white;
+  text-align: center;
+  line-height: 80px;
+  transform: translate3d(0, 0, 0);
+  transition: transform ease-out 200ms;
+}
+.menu-open {
+  display: none;
+}
+.menu-item {
+  @extend %ball;
+}
+.hamburger {
+  $width: 25px;
+  $height: 3px;
+  width: $width;
+  height: $height;
+  background: white;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -$width/2;
+  margin-top: -$height/2;
+  transition: transform 200ms;
+}
+$hamburger-spacing: 8px;
+.hamburger-1 {
+  transform: translate3d(0, -$hamburger-spacing, 0);
+}
+.hamburger-2 {
+  transform: translate3d(0, 0, 0);
+}
+.hamburger-3 {
+  transform: translate3d(0, $hamburger-spacing, 0);
+}
+.menu-open:checked + .menu-open-button {
+  .hamburger-1 {
+    transform: translate3d(0, 0, 0) rotate(45deg);
+  }
+  .hamburger-2 {
+    transform: translate3d(0, 0, 0) scale(0.1, 1);
+  }
+  .hamburger-3 {
+    transform: translate3d(0, 0, 0) rotate(-45deg);
+  }
+}
+.menu {
+  @extend %goo;
+  $width: 380px;
+  $height: 250px;
+  position: absolute;
+  left: 50%;
+  margin-left: -$width/2;
+  padding-top: 20px;
+  padding-left: $width/2;
+  width: $width;
+  height: $height;
+  box-sizing: border-box;
+  font-size: 20px;
+  text-align: left;
+}
+
+.menu-item {
+  &:hover {
+    background: white;
+    color: $fg;
+    & > svg {
+      fill: $fg;
+    }
+  }
+  & > svg {
+    fill: white;
+  }
+  @for $i from 1 through $menu-items {
+    &:nth-child(#{$i + 2}) {
+      transition-duration: 10ms+ (60ms * ($i));
+    }
+  }
+}
+
+.menu-open-button {
+  @extend %ball;
+  z-index: 2;
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition-duration: 400ms;
+  transform: scale(1.1, 1.1) translate3d(0, 0, 0);
+  cursor: pointer;
+}
+.menu-open-button:hover {
+  transform: scale(1.2, 1.2) translate3d(0, 0, 0);
+}
+.menu-open:checked + .menu-open-button {
+  transition-timing-function: linear;
+  transition-duration: 200ms;
+  transform: scale(0.8, 0.8) translate3d(0, 0, 0);
+}
+
+.menu-open:checked ~ .menu-item {
+  transition-timing-function: cubic-bezier(0.935, 0, 0.34, 1.33);
+  @for $i from 1 through $menu-items {
+    $angle: (($pi - $opening-angle)/2)+
+      (($opening-angle/($menu-items - 1)) * ($i - 1));
+
+    &:nth-child(#{$i + 2}) {
+      transition-duration: 80ms+ (80ms * $i);
+      transform: translate3d(
+        cos($angle) * $open-distance,
+        sin($angle) * $open-distance,
+        0
+      );
+    }
+  }
+}

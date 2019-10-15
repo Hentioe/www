@@ -1,0 +1,23 @@
+name: www
+version: 0.1.0
+
+authors:
+  - Hentioe <me@bluerain.io>
+
+targets:
+  www:
+    main: src/www.cr
+
+crystal: 0.30.1
+
+license: MIT
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
+  digests:
+    github: Hentioe/digests.cr
+  sam:
+    github: imdrasil/sam.cr
+  clicr:
+    github: j8r/clicr
