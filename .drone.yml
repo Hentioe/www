@@ -1,0 +1,36 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: app-test
+    image: bluerain/crystal:0.30.1-build
+    pull: true
+    commands:
+      - shards --production
+      - WWW_ENV=test crystal spec
+
+  - name: assets-build
+    image: node:stretch
+    commands:
+      - npm install --prefix ./assets
+      - npm run deploy --prefix ./assets
+
+  - name: app-build
+    image: bluerain/crystal:0.30.1-build
+    pull: true
+    commands:
+      - shards build --release --progress --production --warnings=all
+      - crystal sam.cr -- digests:make
+
+  - name: image-build
+    image: docker
+    commands:
+      - docker build . -t bluerain/www
+    volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
+
+volumes:
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock
