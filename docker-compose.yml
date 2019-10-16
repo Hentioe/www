@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  server:
+    image: bluerain/www
+    stdin_open: true
+    ports:
+      - 8080:8080
+    restart: always
