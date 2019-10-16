@@ -1,7 +1,7 @@
 require "clicr"
 
 module WWW::CLI
-  macro def_action(action)
+  macro def_action(action, exclude = false)
     def cli_run
       Clicr.create(
         name: "www",
@@ -12,6 +12,10 @@ module WWW::CLI
             info:    "Web server port",
             default: 8080,
           },
+          llevel: {
+            info: "Log level",
+            default: "info",
+          }
         },
         options: {
           prod: {
@@ -21,6 +25,6 @@ module WWW::CLI
       )
     end
 
-    cli_run unless ENV["WWW_ENV"]? == "test"
+    cli_run unless {{exclude}}
   end
 end
