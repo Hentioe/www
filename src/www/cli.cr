@@ -25,6 +25,14 @@ module WWW::CLI
       )
     end
 
-    cli_run unless {{exclude}}
+    begin
+      cli_run unless {{exclude}}
+    rescue ex : Clicr::Help
+      puts ex; exit 0
+    rescue ex : Clicr::ArgumentRequired | Clicr::UnknownCommand | Clicr::UnknownOption | Clicr::UnknownVariable
+      abort ex
+    rescue ex
+      raise ex
+    end
   end
 end
